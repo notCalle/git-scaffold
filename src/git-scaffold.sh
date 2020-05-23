@@ -29,8 +29,8 @@ scaffold_refspec()
 
 template()
 {
-    grep -v ./.git/ > ${TMPDIR:-/tmp}/$$.tmp
-    cat ${TMPDIR:-/tmp}/$$.tmp | while read file ; do
+    grep -v ./.git/ > "${TMPDIR:-/tmp}/$$.tmp"
+    < "${TMPDIR:-/tmp}/$$.tmp" while read -r file ; do
         new_file="$(echo "${file}" | template_sed)"
         [ "${new_file}" != "${file}" ] && mv "${file}" "${new_file}"
         if [ -f "${new_file}" ]; then
@@ -60,16 +60,16 @@ shift || usage
 if [ -z "${project}" ]; then
     project="${PWD##*/}"
 else
-    mkdir "${project}" && cd "${project}" || die
+    (mkdir "${project}" && cd "${project}") || die
 fi
 
 git init
 git pull --squash "$(scaffold_repo "${scaffold}")" "$(scaffold_refspec "${scaffold}")"
 
-: ${TEMPLATE_SNAKE:=${project}}
-: ${TEMPLATE_CAMEL:=$(snake2camel "${TEMPLATE_SNAKE}")}
-: ${TEMPLATE_AUTHOR:=$(git config --get user.name)}
-: ${TEMPLATE_EMAIL:=$(git config --get user.email)}
+: "${TEMPLATE_SNAKE:=${project}}"
+: "${TEMPLATE_CAMEL:=$(snake2camel "${TEMPLATE_SNAKE}")}"
+: "${TEMPLATE_AUTHOR:=$(git config --get user.name)}"
+: "${TEMPLATE_EMAIL:=$(git config --get user.email)}"
 
 find . -type d -print | template
 find . -type f -print | template

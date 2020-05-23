@@ -1,6 +1,11 @@
+PREFIX =? /usr/local
+
+.PHONY: test
+test:
+	shellcheck src/git-scaffold.sh
+
 .PHONY: install
+install: $(PREFIX)/bin/git-scaffold
 
-install: /usr/local/bin/git-scaffold
-
-/usr/local/bin/git-scaffold: src/git-scaffold.sh
+$(PREFIX)/bin/git-scaffold: src/git-scaffold.sh
 	cp $< $@
